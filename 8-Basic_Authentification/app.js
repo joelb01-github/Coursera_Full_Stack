@@ -3,6 +3,8 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+var session = require('express-session');
+var FileStore = require('session-file-store')(session);
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -31,10 +33,18 @@ app.set('view engine', 'jade');
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser('12345-12345-12345-12345'));                               // providing secret key
+// app.use(cookieParser('12345-12345-12345-12345'));                               // providing secret key
+app.use(session({                                                               // launching session middleware
+  name: 'session-id',
+  secret: '12345-12345-12345-12345',
+  saveUninitialized: false,
+  resave: false,
+  store: new FileStore()
+}));
 
 function auth(req, res, next){
-  if (!req.signedCookies.user){                                                 // meaning user hasn't authenticated himself yet
+  console.log(req.session);
+  if (!req.session.user){                                                 // meaning user hasn't authenticated himself yet
     var authHeader = req.headers.authorization;                                 // fetching the auth header sent by Client
 
     if (!authHeader){                                                           // Authorization header not supplied
@@ -50,7 +60,8 @@ function auth(req, res, next){
     var password = auth[1];
 
     if(username === 'admin' && password === 'password'){                        // hardcoding the UN:PW for the moment
-      res.cookie('user', 'admin', {signed: true});
+      req.session.user = 'admin';
+      //res.cookie('user', 'admin', {signed: true});
       next();                                                                   // OK to continue to next middleware
     }
     else {
@@ -61,7 +72,8 @@ function auth(req, res, next){
     }
   }
   else {
-    if (req.signedCookies.user === 'admin'){                                    // means contains the right information
+    // if (req.signedCookies.user === 'admin'){                                    // means contains the right information
+    if (req.session.user === 'admin'){
       next();
     }
     else {
