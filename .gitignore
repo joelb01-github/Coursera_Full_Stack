@@ -6,3 +6,5 @@ mongodb
 /6-node_mango/node_modules
 /7-node_mongose/node_modules
 /conFusionServer/node_modules
+/8-Basic_Authentification/node_modules
+/8-Basic_Authentification/sessions
