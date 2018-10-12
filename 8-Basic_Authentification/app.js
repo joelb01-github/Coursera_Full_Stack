@@ -42,38 +42,19 @@ app.use(session({                                                               
   store: new FileStore()
 }));
 
+app.use('/', indexRouter);
+app.use('/users', usersRouter);
+
 function auth(req, res, next){
   console.log(req.session);
   if (!req.session.user){                                                 // meaning user hasn't authenticated himself yet
-    var authHeader = req.headers.authorization;                                 // fetching the auth header sent by Client
-
-    if (!authHeader){                                                           // Authorization header not supplied
-      var err = new Error('You are not authenticated!');                        // Challenging Client to provide it
-      res.setHeader('WWW-Authenticate', 'Basic');
-      err.status = 401;
-      next(err);                                                                // Will be handled by the error handler
-    }
-
-    var auth = new Buffer.from(authHeader.split(' ')[1], 'base64')              // extracting the header, looking at 2nd element of the 1st split array that is the base64 encoded string (User/PW) 2nd split array is the actual username and PW
-       .toString().split(':');
-    var username = auth[0];
-    var password = auth[1];
-
-    if(username === 'admin' && password === 'password'){                        // hardcoding the UN:PW for the moment
-      req.session.user = 'admin';
-      //res.cookie('user', 'admin', {signed: true});
-      next();                                                                   // OK to continue to next middleware
-    }
-    else {
-      var err = new Error('Wrong username and/or PW!');
-      res.setHeader('WWW-Authenticate', 'Basic');
-      err.status = 401;
-      next(err);
-    }
+    var err = new Error('You are not authenticated!');
+    err.status = 401;
+    next(err);                                                                // Will be handled by the error handler
   }
   else {
     // if (req.signedCookies.user === 'admin'){                                    // means contains the right information
-    if (req.session.user === 'admin'){
+    if (req.session.user === 'authenticated'){
       next();
     }
     else {
@@ -88,8 +69,6 @@ app.use(auth);
 
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
 app.use('/dishes', dishRouter);
 app.use('/promotions', promoRouter);
 app.use('/leaders', leaderRouter);
