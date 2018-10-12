@@ -33,6 +33,36 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+
+function auth(req, res, next){                                                  // Before the client can access any further middleware, we request authentification
+  console.log(req.headers);
+  var authHeader = req.headers.authorization;                                   // fetching the auth header sent by Client
+
+  if (!authHeader){                                                             // Authorization header not supplied
+    var err = new Error('You are not authenticated!');                          // Challenging Client to provide it
+    res.setHeader('WWW-Authenticate', 'Basic');
+    err.status = 401;
+    next(err);                                                                  // Will be handled by the error handler
+  }
+
+  var auth = new Buffer(                                                        // extracting the header, looking at 2nd element of the 1st split array that is the base64 encoded string (User/PW) 2nd split array is the actual username and PW
+    authHeader.split(' ')[1], 'base64').toString().split(':');
+  var username = auth[0];
+  var password = auth[1];
+
+  if(username === 'admin' && password === 'password'){                          // hardcoding the UN:PW for the moment
+    next();                                                                     // OK to continue to next middleware
+  }
+  else {
+    var err = new Error('Wrong username and/or PW!');
+    res.setHeader('WWW-Authenticate', 'Basic');
+    err.status = 401;
+    next(err);
+  }
+}
+
+app.use(auth);
+
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
