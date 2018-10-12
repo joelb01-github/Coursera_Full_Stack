@@ -25,39 +25,50 @@ connect.then((db) => {
 
 var app = express();
 
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
+app.set('views', path.join(__dirname, 'views'));                                // view engine setup
 app.set('view engine', 'jade');
 
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
+app.use(cookieParser('12345-12345-12345-12345'));                               // providing secret key
 
-function auth(req, res, next){                                                  // Before the client can access any further middleware, we request authentification
-  console.log(req.headers);
-  var authHeader = req.headers.authorization;                                   // fetching the auth header sent by Client
+function auth(req, res, next){
+  if (!req.signedCookies.user){                                                 // meaning user hasn't authenticated himself yet
+    var authHeader = req.headers.authorization;                                 // fetching the auth header sent by Client
 
-  if (!authHeader){                                                             // Authorization header not supplied
-    var err = new Error('You are not authenticated!');                          // Challenging Client to provide it
-    res.setHeader('WWW-Authenticate', 'Basic');
-    err.status = 401;
-    next(err);                                                                  // Will be handled by the error handler
-  }
+    if (!authHeader){                                                           // Authorization header not supplied
+      var err = new Error('You are not authenticated!');                        // Challenging Client to provide it
+      res.setHeader('WWW-Authenticate', 'Basic');
+      err.status = 401;
+      next(err);                                                                // Will be handled by the error handler
+    }
 
-  var auth = new Buffer(                                                        // extracting the header, looking at 2nd element of the 1st split array that is the base64 encoded string (User/PW) 2nd split array is the actual username and PW
-    authHeader.split(' ')[1], 'base64').toString().split(':');
-  var username = auth[0];
-  var password = auth[1];
+    var auth = new Buffer.from(authHeader.split(' ')[1], 'base64')              // extracting the header, looking at 2nd element of the 1st split array that is the base64 encoded string (User/PW) 2nd split array is the actual username and PW
+       .toString().split(':');
+    var username = auth[0];
+    var password = auth[1];
 
-  if(username === 'admin' && password === 'password'){                          // hardcoding the UN:PW for the moment
-    next();                                                                     // OK to continue to next middleware
+    if(username === 'admin' && password === 'password'){                        // hardcoding the UN:PW for the moment
+      res.cookie('user', 'admin', {signed: true});
+      next();                                                                   // OK to continue to next middleware
+    }
+    else {
+      var err = new Error('Wrong username and/or PW!');
+      res.setHeader('WWW-Authenticate', 'Basic');
+      err.status = 401;
+      next(err);
+    }
   }
   else {
-    var err = new Error('Wrong username and/or PW!');
-    res.setHeader('WWW-Authenticate', 'Basic');
-    err.status = 401;
-    next(err);
+    if (req.signedCookies.user === 'admin'){                                    // means contains the right information
+      next();
+    }
+    else {
+      var err = new Error('You are not authenticated!');                        // Challenging Client to provide it
+      err.status = 401;
+      next(err);
+    }
   }
 }
 
@@ -71,19 +82,15 @@ app.use('/dishes', dishRouter);
 app.use('/promotions', promoRouter);
 app.use('/leaders', leaderRouter);
 
-// catch 404 and forward to error handler
-app.use(function(req, res, next) {
+app.use(function(req, res, next) {                                              // catch 404 and forward to error handler
   next(createError(404));
 });
 
-// error handler
-app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
+app.use(function(err, req, res, next) {                                         // error handler
+  res.locals.message = err.message;                                             // set locals, only providing error in development
   res.locals.error = req.app.get('env') === 'development' ? err : {};
 
-  // render the error page
-  res.status(err.status || 500);
+  res.status(err.status || 500);                                                // render the error page
   res.render('error');
 });
 
