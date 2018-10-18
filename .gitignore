@@ -8,3 +8,5 @@ mongodb
 /conFusionServer/node_modules
 /8-Basic_Authentification/node_modules
 /8-Basic_Authentification/sessions
+/9-Passport_Authentification/node_modules
+/9-Passport_Autentification/sessions
