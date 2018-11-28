@@ -1,6 +1,6 @@
+//author: jos
 const express = require('express');
 const bodyParser = require('body-parser');
-// require mongoose?
 const authenticate = require('../authenticate');
 
 const Dishes = require('../models/dishes');

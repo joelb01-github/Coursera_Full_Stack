@@ -248,17 +248,24 @@ dishRouter.route('/:dishId/comments/:commentId')
     if (dish != null
       && dish.comments.id(req.params.commentId) != null){
         if(req.user._id.equals(dish.comments.id(req.params.commentId).author._id)){
-          dish.comments.id(req.params.commentId).remove();
-          dish.save()
-          .then((dish) => {
-            Dishes.findById(dish._id)
-            .populate('comments.author')
+          // if this is the latest favorite, we need to delete the netire
+          // schema as in delete on /favorites
+          if (dish.comments.length === 1) {
+            
+          }
+          else {
+            dish.comments.id(req.params.commentId).remove();
+            dish.save()
             .then((dish) => {
-              res.statusCode = 200;
-              res.setHeader('Content-Type', 'application/json');
-              res.json(dish);
-            })
-          }, (err) => next(err));
+              Dishes.findById(dish._id)
+              .populate('comments.author')
+              .then((dish) => {
+                res.statusCode = 200;
+                res.setHeader('Content-Type', 'application/json');
+                res.json(dish);
+              })
+            }, (err) => next(err));
+          }
         }
         else {
           err = new Error('Only the author of this comment can delete it!');

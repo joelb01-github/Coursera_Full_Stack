@@ -10,3 +10,5 @@ mongodb
 /8-Basic_Authentification/sessions
 /9-Passport_Authentification/node_modules
 /9-Passport_Autentification/sessions
+/10-HTTPS/node_modules
+/10-HTTPS/sessions

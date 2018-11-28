@@ -1,0 +1,58 @@
+[
+    {
+        "label": "Hot",
+        "featured": true,
+        "_id": "5bcb44f5645df94e9b78d6d2",
+        "name": "Uthappizza",
+        "image": "images/uthappizza.png",
+        "category": "mains",
+        "price": 499,
+        "description": "A unique combination of Indian Uthappam (pancake) and Italian pizza, topped with Cerignola olives, ripe vine cherry tomatoes, Vidalia onion, Guntur chillies and Buffalo Paneer.",
+        "comments": [],
+        "createdAt": "2018-10-20T15:08:37.165Z",
+        "updatedAt": "2018-10-20T15:08:37.165Z",
+        "__v": 0
+    },
+    {
+        "label": "Hot",
+        "featured": true,
+        "_id": "5bcb4506645df94e9b78d6d3",
+        "name": "pizza 2",
+        "image": "images/uthappizza.png",
+        "category": "mains",
+        "price": 499,
+        "description": "A unique combination of Indian Uthappam (pancake) and Italian pizza, topped with Cerignola olives, ripe vine cherry tomatoes, Vidalia onion, Guntur chillies and Buffalo Paneer.",
+        "comments": [],
+        "createdAt": "2018-10-20T15:08:54.122Z",
+        "updatedAt": "2018-10-20T15:08:54.122Z",
+        "__v": 0
+    },
+    {
+        "label": "Hot",
+        "featured": true,
+        "_id": "5bcb452c645df94e9b78d6d4",
+        "name": "pizza 3",
+        "image": "images/uthappizza.png",
+        "category": "mains",
+        "price": 499,
+        "description": "A unique combination of Indian Uthappam (pancake) and Italian pizza, topped with Cerignola olives, ripe vine cherry tomatoes, Vidalia onion, Guntur chillies and Buffalo Paneer.",
+        "comments": [],
+        "createdAt": "2018-10-20T15:09:32.598Z",
+        "updatedAt": "2018-10-20T15:09:32.598Z",
+        "__v": 0
+    },
+    {
+        "label": "Hot",
+        "featured": true,
+        "_id": "5bcb452c645df94e9b78d6d5",
+        "name": "pizza 4",
+        "image": "images/uthappizza.png",
+        "category": "mains",
+        "price": 499,
+        "description": "A unique combination of Indian Uthappam (pancake) and Italian pizza, topped with Cerignola olives, ripe vine cherry tomatoes, Vidalia onion, Guntur chillies and Buffalo Paneer.",
+        "comments": [],
+        "createdAt": "2018-10-20T15:09:32.598Z",
+        "updatedAt": "2018-10-20T15:09:32.598Z",
+        "__v": 0
+    }
+]
